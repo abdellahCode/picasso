@@ -102,7 +102,7 @@ public class StatsSnapshot {
     writer.println(averageOriginalBitmapSize);
     writer.print("  Average Transformed Bitmap Size: ");
     writer.println(averageTransformedBitmapSize);
-    writer.print("  Average Download Time: ");
+    writer.print("  Average Download Time(ms): ");
     writer.println(averageDownloadTime);
     writer.println("===============END PICASSO STATS ===============");
     writer.flush();
@@ -138,7 +138,7 @@ public class StatsSnapshot {
         + transformedBitmapCount
         + ", timeStamp="
         + timeStamp
-        + ", averageDownloadTime="
+        + ", averageDownloadTime(ms)="
         + averageDownloadTime
         + '}';
   }
