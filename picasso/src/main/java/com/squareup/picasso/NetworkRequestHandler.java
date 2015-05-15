@@ -44,6 +44,7 @@ class NetworkRequestHandler extends RequestHandler {
   }
 
   @Override public Result load(Request request, int networkPolicy) throws IOException {
+    long start = System.currentTimeMillis();
     Response response = downloader.load(request.uri, request.networkPolicy);
     if (response == null) {
       return null;
@@ -67,7 +68,7 @@ class NetworkRequestHandler extends RequestHandler {
       throw new ContentLengthException("Received response with 0 content-length header.");
     }
     if (loadedFrom == NETWORK && response.getContentLength() > 0) {
-      stats.dispatchDownloadFinished(response.getContentLength());
+      stats.dispatchDownloadFinished(response.getContentLength(), Math.abs(start - System.currentTimeMillis()));
     }
     return new Result(is, loadedFrom);
   }

@@ -47,6 +47,7 @@ class Stats {
   int downloadCount;
   int originalBitmapCount;
   int transformedBitmapCount;
+  int averageLoadingTime = 0;
 
   Stats(Cache cache) {
     this.cache = cache;
@@ -64,8 +65,8 @@ class Stats {
     processBitmap(bitmap, BITMAP_TRANSFORMED_FINISHED);
   }
 
-  void dispatchDownloadFinished(long size) {
-    handler.sendMessage(handler.obtainMessage(DOWNLOAD_FINISHED, size));
+  void dispatchDownloadFinished(long size, long loadingTime) {
+    handler.sendMessage(handler.obtainMessage(DOWNLOAD_FINISHED, new Long[]{size, loadingTime}));
   }
 
   void dispatchCacheHit() {
@@ -88,10 +89,15 @@ class Stats {
     cacheMisses++;
   }
 
-  void performDownloadFinished(Long size) {
+  void performDownloadFinished(Long[] sizeAndTime) {
     downloadCount++;
-    totalDownloadSize += size;
+    totalDownloadSize += sizeAndTime[0];
     averageDownloadSize = getAverage(downloadCount, totalDownloadSize);
+    averageLoadingTime = calculateAverageTime(downloadCount, sizeAndTime[1]);
+  }
+
+  private int calculateAverageTime(int downloadCount,long loadingTime){
+    return ((averageLoadingTime * (downloadCount - 1)) + loadingTime) / downloadCount;
   }
 
   void performBitmapDecoded(long size) {
@@ -147,7 +153,7 @@ class Stats {
           stats.performBitmapTransformed(msg.arg1);
           break;
         case DOWNLOAD_FINISHED:
-          stats.performDownloadFinished((Long) msg.obj);
+          stats.performDownloadFinished((Long[]) msg.obj);
           break;
         default:
           Picasso.HANDLER.post(new Runnable() {

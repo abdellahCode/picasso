@@ -36,13 +36,14 @@ public class StatsSnapshot {
   public final int downloadCount;
   public final int originalBitmapCount;
   public final int transformedBitmapCount;
+  public final long averageDownloadTime;
 
   public final long timeStamp;
 
   public StatsSnapshot(int maxSize, int size, long cacheHits, long cacheMisses,
       long totalDownloadSize, long totalOriginalBitmapSize, long totalTransformedBitmapSize,
       long averageDownloadSize, long averageOriginalBitmapSize, long averageTransformedBitmapSize,
-      int downloadCount, int originalBitmapCount, int transformedBitmapCount, long timeStamp) {
+      int downloadCount, int originalBitmapCount, int transformedBitmapCount, long timeStamp, long averageDownloadTime) {
     this.maxSize = maxSize;
     this.size = size;
     this.cacheHits = cacheHits;
@@ -57,6 +58,7 @@ public class StatsSnapshot {
     this.originalBitmapCount = originalBitmapCount;
     this.transformedBitmapCount = transformedBitmapCount;
     this.timeStamp = timeStamp;
+    this.averageDownloadTime = averageDownloadTime;
   }
 
   /** Prints out this {@link StatsSnapshot} into log. */
@@ -100,6 +102,8 @@ public class StatsSnapshot {
     writer.println(averageOriginalBitmapSize);
     writer.print("  Average Transformed Bitmap Size: ");
     writer.println(averageTransformedBitmapSize);
+    writer.print("  Average Download Time: ");
+    writer.println(averageDownloadTime);
     writer.println("===============END PICASSO STATS ===============");
     writer.flush();
   }
@@ -134,6 +138,8 @@ public class StatsSnapshot {
         + transformedBitmapCount
         + ", timeStamp="
         + timeStamp
+        + ", averageDownloadTime="
+        + averageDownloadTime
         + '}';
   }
 }
