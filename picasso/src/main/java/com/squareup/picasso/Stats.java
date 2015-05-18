@@ -20,7 +20,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
-
+import android.util.Log;
 import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
 
 class Stats {
@@ -47,7 +47,7 @@ class Stats {
   int downloadCount;
   int originalBitmapCount;
   int transformedBitmapCount;
-  int averageLoadingTime = 0;
+  long averageLoadingTime = 0L;
 
   Stats(Cache cache) {
     this.cache = cache;
@@ -93,11 +93,14 @@ class Stats {
     downloadCount++;
     totalDownloadSize += sizeAndTime[0];
     averageDownloadSize = getAverage(downloadCount, totalDownloadSize);
+    Log.d("abdellah", "value bfore: " + downloadCount + " -- " + sizeAndTime[1]);
     averageLoadingTime = calculateAverageTime(downloadCount, sizeAndTime[1]);
   }
 
-  private int calculateAverageTime(int downloadCount,long loadingTime){
-    return ((averageLoadingTime * (downloadCount - 1)) + loadingTime) / downloadCount;
+  private long calculateAverageTime(int downloadCount,long loadingTime){
+    Log.d("abdellah", "values after: " + downloadCount + " -- " + loadingTime);
+    long result = ((averageLoadingTime * (long)(downloadCount - 1)) + loadingTime) / (long)downloadCount;
+    return result;
   }
 
   void performBitmapDecoded(long size) {
@@ -116,7 +119,7 @@ class Stats {
     return new StatsSnapshot(cache.maxSize(), cache.size(), cacheHits, cacheMisses,
         totalDownloadSize, totalOriginalBitmapSize, totalTransformedBitmapSize, averageDownloadSize,
         averageOriginalBitmapSize, averageTransformedBitmapSize, downloadCount, originalBitmapCount,
-        transformedBitmapCount, System.currentTimeMillis());
+        transformedBitmapCount, System.currentTimeMillis(), averageLoadingTime);
   }
 
   private void processBitmap(Bitmap bitmap, int what) {

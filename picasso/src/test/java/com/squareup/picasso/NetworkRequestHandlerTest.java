@@ -103,10 +103,11 @@ public class NetworkRequestHandlerTest {
 
   @Test public void noCacheAndKnownContentLengthDispatchToStats() throws Exception {
     Downloader.Response response = new Downloader.Response(mockInputStream(), false, 1024);
+    long start = System.currentTimeMillis();
     when(downloader.load(any(Uri.class), anyInt())).thenReturn(response);
     Action action = TestUtils.mockAction(URI_KEY_1, URI_1);
     networkHandler.load(action.getRequest(), 0);
-    verify(stats).dispatchDownloadFinished(response.contentLength);
+    verify(stats).dispatchDownloadFinished(response.contentLength, Math.abs(start - System.currentTimeMillis()));
   }
 
   @Test public void unknownContentLengthFromDiskThrows() throws Exception {
